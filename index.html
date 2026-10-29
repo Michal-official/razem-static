@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Razem — prosty czat online">
+<title>Razem — czat online</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--line:#293550;--text:#f4f6ff;--muted:#aab4ce}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(ellipse at top,#1b2850 0%,var(--bg) 58%);color:var(--text);display:grid;place-items:center;padding:20px}
+.app{width:min(850px,100%);min-height:min(760px,calc(100vh - 40px));display:flex;flex-direction:column;overflow:hidden;background:rgba(18,26,46,.96);border:1px solid var(--line);border-radius:24px;box-shadow:0 25px 80px #0007}
+header{padding:22px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;gap:12px;align-items:center}.logo{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:linear-gradient(135deg,#8293ff,#b18cff);color:#10152b}
+h1{margin:0;font-size:20px}.sub{margin:3px 0 0;color:var(--muted);font-size:13px}
+.status{font-size:12px;color:#c4d0f0;background:#202b45;border:1px solid #344363;padding:7px 10px;border-radius:999px;white-space:nowrap}
+.settings{padding:14px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+label{color:var(--muted);font-size:13px;white-space:nowrap}
+input{min-width:0;width:100%;color:var(--text);background:#0b1224;border:1px solid var(--line);border-radius:12px;padding:12px 14px;outline:none;font:inherit}
+input:focus{border-color:#a3b0ff;box-shadow:0 0 0 3px #8b9cff20}
+#messages{min-height:260px;max-height:52vh;overflow-y:auto;padding:22px 24px;display:flex;flex-direction:column;gap:13px}
+.welcome{margin:auto;text-align:center;max-width:390px;color:var(--muted);line-height:1.6;padding:22px 0}.bubble-icon{font-size:35px;margin-bottom:8px}
+.message{max-width:80%;align-self:flex-start;background:#202b45;border:1px solid #2b3958;border-radius:16px 16px 16px 5px;padding:11px 14px;overflow-wrap:anywhere}
+.meta{display:flex;gap:10px;align-items:center;margin-bottom:5px;font-size:12px;color:#b9c4e1}.meta time{color:#8190b2}
+.message p{margin:0;white-space:pre-wrap;line-height:1.45}
+.composer{display:flex;gap:10px;padding:18px 24px 22px;border-top:1px solid var(--line)}
+button{border:0;border-radius:12px;padding:0 21px;min-height:46px;font:inherit;font-weight:650;color:#10152b;background:linear-gradient(135deg,#9eacff,#c2a0ff);cursor:pointer}
+button:hover{filter:brightness(1.08)}.foot{text-align:center;padding:0 16px 16px;color:#7784a3;font-size:11px}
+@media(max-width:540px){body{padding:0}.app{min-height:100vh;border-radius:0;border:0}.settings{padding:12px 16px}header{padding:18px 16px}#messages{padding:18px 16px}.composer{padding:14px 16px 18px}.status{font-size:0}.status:after{content:"DEMO";font-size:11px}.message{max-width:92%}}
+</style>
+</head>
+<body>
+<main class="app">
+<header><div class="brand"><div class="logo" aria-hidden="true">✦</div><div><h1>Razem</h1><p class="sub">Prosty czat — wersja demonstracyjna</p></div></div><div class="status">Tylko w tej przeglądarce</div></header>
+<section class="settings"><label for="name">Twój nick</label><input id="name" maxlength="24" placeholder="Np. Alex" value="Gość"></section>
+<section id="messages" aria-live="polite" aria-label="Wiadomości"><div class="welcome" id="welcome"><div class="bubble-icon">💬</div><strong>Witaj na czacie!</strong><br>Wpisz nick i wyślij wiadomość. Ta wersja pokazuje wiadomości tylko w tej przeglądarce. Aby rozmawiać z innymi osobami przez internet, potrzebny jest serwer czatu.</div></section>
+<form class="composer" id="form"><input id="text" maxlength="1000" autocomplete="off" placeholder="Napisz wiadomość…" aria-label="Treść wiadomości" required><button type="submit">Wyślij ↗</button></form>
+<div class="foot">Demonstracja interfejsu · Nie wpisuj haseł ani prywatnych danych</div>
+</main>
+<script>
+const form=document.getElementById("form");
+const nameEl=document.getElementById("name");
+const textEl=document.getElementById("text");
+const messagesEl=document.getElementById("messages");
+const welcome=document.getElementById("welcome");
+form.addEventListener("submit",(event)=>{
+ event.preventDefault();
+ const text=textEl.value.trim();
+ if(!text)return;
+ if(welcome&&welcome.isConnected)welcome.remove();
+ const article=document.createElement("article");article.className="message";
+ const meta=document.createElement("div");meta.className="meta";
+ const name=document.createElement("strong");name.textContent=(nameEl.value.trim()||"Gość").slice(0,24);
+ const time=document.createElement("time");time.textContent=new Date().toLocaleTimeString("pl-PL",{hour:"2-digit",minute:"2-digit"});
+ const body=document.createElement("p");body.textContent=text;
+ meta.append(name,time);article.append(meta,body);messagesEl.append(article);
+ messagesEl.scrollTop=messagesEl.scrollHeight;textEl.value="";textEl.focus();
+});
+</script>
+</body>
+</html>
